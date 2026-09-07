@@ -94,7 +94,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 - **布局间距**：面板内元素 ≥20px、文本行距 ≥字高+8；跨面板箭头走**预留缝隙**（如 520–660 胞外带），不横穿面板内容/细胞膜；箭头旁标签放线中点**上方 ≥18px** 或线外侧，不与线相交。
 - **密度观感（用户两次校准）**：勿过散——避免"全宽横带平铺/大空洞"，用细胞/器官等**容器**收纳元件更聚拢；勿过挤——元素间 20–60px 均匀留白为佳。
 
-## 四·五、NR 级默认要求（2026-09 评审固化，以后图一律遵守）
+## 五、NR 级默认要求（2026-09 评审固化，以后图一律遵守）
 > 出自 scientific-schematics 按 Nature Reviews/BioRender 标准的评审；对已达标旧图不再大规模返工，**新图与程序化默认一律按此执行**。
 1. **箭头语义统一**：`→`实线＝直接、`- - →`虚线＝间接、`⊣`＝抑制；**每箭头只表一种关系**；加箭头图例。
 2. **标签名词化·最短**：≤8 汉字名词短语（非整句）；**≥7pt**；解释性文字移图注（Word）。
@@ -105,7 +105,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 7. **从矢量源导出 ≥300dpi**（出版用 PNG）；**源文件版本管理**（`fN_gen.py` 归档）。
 8. **图标用授权库/自绘**（BioRender 出版许可 / Bioicons / Reactome CC-BY；重绘勿截图）。
 
-## 五、教材固定规范（我们沉淀，bio 教材章用）
+## 六、教材固定规范（我们沉淀，bio 教材章用）
 | 项 | 固定值 |
 |----|--------|
 | 图幅 | 通栏 **150×100mm**（3:2）＝150mm 版心宽 |
@@ -118,7 +118,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 | AI 修图（Illustrator） | 打开 PDF 修图：字体统一 **Arial Bold**、所有描边统一 **0.75pt**；其余样式不变 |
 | 图注 | 放 Word（图下方**宋体 6pt**），不入图 |
 
-## 五·五、既有图（AI 导出）NR 增强 + 进阶质感（复盘定稿）
+## 七、既有图（AI 导出）NR 增强 + 进阶质感（复盘定稿）
 对**已 AI 导出**的图（非程序化重画），**只增强质感、不改排版**。工具：`scripts/nr_color_audit.py` + `scripts/nr_enhance.py`（随 skill 分发，见 GitHub 仓库 `wangseeker/bio-svg-figure`）。
 
 1. **配色审计+校正**：`nr_color_audit.py <f>.svg --prefix=<f>` → `_NR配色.svg` + 审计 md（莫兰迪降饱和、红绿并用检查、文字对比、色相精简）
@@ -136,7 +136,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 6. 中间产物/旧文件过多 → 只留最新 `_NR进阶.svg` + `_出版300dpi.png`；原始另存 `原始/`
 7. 图号/图注错位 → **按内容**对齐重排连续 f1–f17；正文定稿版"图12-1~12-17"天然对应；`Figure-Legends.docx` 需同步重排
 
-## 六、工作流
+## 八、工作流
 1. 定主题/要素（该画什么、分几区、标签文字，忠于教材/论文）
 2. 定图幅、字号、色板（第二、五节常量）
 3. 元件化拼装（ball/node/arrow/beta_cycle/membrane/region 等；函数库 `scripts/elements.py`，拼装示例见 `references/教材作图批量方法.md`）
@@ -145,7 +145,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 6. 人眼验收（勿凭机械评审）→ 验收后按需精修
 7. 图注入 Word/论文
 
-## 七、🛟 故障与兜底（三段式：触发条件 → 一线修复 → 仍失败兜底）
+## 九、🛟 故障与兜底（三段式：触发条件 → 一线修复 → 仍失败兜底）
 
 | # | 故障 | 一线修复 | 仍失败兜底 |
 |---|------|----------|-----------|
@@ -158,7 +158,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 
 ---
 
-## 八、踩过的坑（教训，直接照做）
+## 十、踩过的坑（教训，直接照做）
 - ❌ AI 生图（错字/漂移/位图）→ 程序化 SVG
 - ❌ SVG 内联 style/class → Illustrator 不显示 → **标准属性**
 - ❌ SVG 直接开 AI 兼容差 → 用 **PDF** 或独立结构图
@@ -171,7 +171,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 - ❌ 无视觉 agent 直交文字墙 → 跑 G3 统计自查（图形:文本≥5:1、均长≤8）
 - ❌ 为字号下限放大长文本 → 短标签 + 字号分级 G4（放大文字=文字化帮凶）
 
-## 九、多 Agent 流水线（借鉴 PaperBanana，适配程序化 SVG）
+## 十一、多 Agent 流水线（借鉴 PaperBanana，适配程序化 SVG）
 > PaperBanana 用 Retriever/Planner/Stylist/Visualizer/Critic 五智能体做"AI 生图"；我们把它**映射到程序化 SVG**（Visualizer=程序生成而非图像生成，Critic=程序校验+人眼，规避 AI 漂移/错字/位图）。
 
 | PaperBanana Agent | 我们的 SVG 版 | 做什么 | 产出 |
@@ -193,7 +193,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 - Critic 用**程序校验 + 人眼** 而非 AI 评审（机械评审判视觉不可靠）
 - Retriever 用**教材/论文原文**（忠于内容），不是任意参考图
 
-## 十、Related
+## 十二、Related
 - `scientific-visualization` — 数据图（图/热图）
 - `scientific-manuscript-writing` — 图注与论文整合
 - `textbook-chapter-review` — 教材术语/缩写规范

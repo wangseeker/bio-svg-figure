@@ -6,6 +6,15 @@
 
 ---
 
+## 🎯 NR 级默认要求（2026-09 评审固化，以后图一律遵守）
+> 对标 Nature Reviews/BioRender；对已达标旧图不再大规模返工，**新图与程序化默认一律按此执行**。
+1. **箭头语义统一**：`→`实线=直接、`- - →`虚线=间接、`⊣`=抑制；每箭头只表一种关系；加箭头图例。
+2. **标签名词化·最短**：≤8 汉字短语（非整句）；≥7pt；解释性文字移图注（Word）。
+3. **每面板 ≤8 元素**（超则拆）。
+4. **生物实体一色一义**：语义色 + 文字对比 ≥3:1；配色入图例。
+5. **默认为光影体积**：元件用径向渐变 + 高光 + 微投影（非平涂）；描边统一 **0.75pt**。
+6. **结构图加比例尺**；从矢量源导出 ≥300dpi；源文件版本管理。
+
 ## ⭐ 中心原则（每图必守，全篇前提）
 
 > **每章配 15–20 张图**，追求"读者只看图就能读懂本章节内容"——图即讲解，文字只作补充（图注进 Word、图内只留短标签）。
@@ -23,7 +32,8 @@
 | image-to-image（改一处必全漂）| ❌ 弃 | 局部改动导致整体漂移，不可控 |
 | BioGDP / BioRender 手拖 | ❌ 弃 | 太慢，难批量统一，版权/导出受限 |
 | 数据图表（matplotlib/R）| ➖ 另一条线 | 用 nature-figure（数据驱动），示意图才走本 SOP |
-| **SOP/文档 → PDF** | **pandoc + typst**（`/opt/homebrew/bin/pandoc`）| `pandoc <md> -o <pdf> --pdf-engine=typst -f markdown-citations`；封装 `md2pdf.sh`；中文=黑体 SIL-Hei，代码/表格自动排版 |
+| **SOP/文档 → PDF** | **pandoc + typst**
+| **已有图 NR 批处理** | `nr_color_audit.py`（NR 配色审计+校正）/ `nr_enhance.py`（进阶质感）| 两步：`nr_color_audit F*.svg`（降饱和+色盲检查+报告）→ `nr_enhance F*_NR配色.svg`（极浅暖白底+光影+0.75pt，默认无标尺）|（`/opt/homebrew/bin/pandoc`）| `pandoc <md> -o <pdf> --pdf-engine=typst -f markdown-citations`；封装 `md2pdf.sh`；中文=黑体 SIL-Hei，代码/表格自动排版 |
 
 **一句话**：示意图 → 程序化 SVG；数据图 → matplotlib/R；分子结构 → RDKit。
 

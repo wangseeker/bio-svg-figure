@@ -118,6 +118,24 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 | AI 修图（Illustrator） | 打开 PDF 修图：字体统一 **Arial Bold**、所有描边统一 **0.75pt**；其余样式不变 |
 | 图注 | 放 Word（图下方**宋体 6pt**），不入图 |
 
+## 五·五、既有图（AI 导出）NR 增强 + 进阶质感（复盘定稿）
+对**已 AI 导出**的图（非程序化重画），**只增强质感、不改排版**。工具：`nr_color_audit.py` + `nr_enhance.py`（`textbook/figures/` + GitHub 分发包）。
+
+1. **配色审计+校正**：`nr_color_audit.py <f>.svg --prefix=<f>` → `_NR配色.svg` + 审计 md（莫兰迪降饱和、红绿并用检查、文字对比、色相精简）
+2. **进阶质感**：`nr_enhance.py <f>_NR配色.svg --prefix=<f>` → `_NR进阶.svg`（默认：**极浅暖白底 + 通用光影 + 0.75pt + 无标尺**）
+3. **字体归一**（AI 内嵌名→`SimHei`/`Arial`+`font-weight="bold"`）→ 导出 300dpi PNG（1772×1181）
+
+**定稿参数（勿改）**：极浅暖白底 `#FFFFFF→#FCFAF6→#F4F0E9`（**绝不灰暗**）；只降 **S>0.62** 高饱和、明度只救极暗不压亮；**通用光影**（对每个非文字主填充色生成 `gx_*` 径向渐变，fill→`url(#gx_*)`）；描边 **0.75pt**；中文 `SimHei`/英文 `Arial`，粗体 `font-weight`；无标尺默认（结构图才 `--scalebar`）。
+
+**复盘 7 坑（详见 `textbook/figures/教材矢量大图-NR增强进阶SOP.md`）**：
+1. 背景渐晕做深 → 灰蒙蒙 → 改**极浅暖白**
+2. 全局降饱和+压明度 → 发灰 → 只降 S>0.62、不压亮
+3. 光影只映射解剖色 → 其余图**光影引用=0** → 改**通用光影**（自检 `grep -c 'url(#gx_' <f>_NR进阶.svg` 应>0）
+4. **AI 内嵌字体名**（`Arial-BoldMT`/`ArialMT`/`STHeitiSC-Light`/`KozGoPr6N-83pv-RKSJ-H`）→ 转 PNG **乱码** → 归一 `SimHei`/`Arial`+`font-weight`（自检 `grep -lE "ArialMT|Arial-BoldMT|STHeitiSC|KozGo"` 无输出）
+5. 比例尺误加 → **默认关**（`--scalebar` 才加）
+6. 中间产物/旧文件过多 → 只留最新 `_NR进阶.svg` + `_出版300dpi.png`；原始另存 `原始/`
+7. 图号/图注错位 → **按内容**对齐重排连续 f1–f17；正文定稿版"图12-1~12-17"天然对应；`Figure-Legends.docx` 需同步重排
+
 ## 六、工作流
 1. 定主题/要素（该画什么、分几区、标签文字，忠于教材/论文）
 2. 定图幅、字号、色板（第二、五节常量）

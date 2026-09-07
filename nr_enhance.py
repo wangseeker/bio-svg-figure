@@ -63,19 +63,31 @@ def enhance(svg_path, prefix=None, scalebar=False, bg=True):
         tgt = MAP.get(hu) or MAP.get(hx.lower())
         if tgt: raw = raw.replace(hx, tgt)
         elif hu != "#FFFFFF": raw = raw.replace(hx, hsl_morandi(hu))
-    # 结构色 fill → 渐变 url（莫兰迪后值）
-    for hexc, gid in FILL_URL.items():
-        old = "fill:" + hexc
-        if old in raw: raw = raw.replace(old, f"fill:url(#{gid})")
+    # 通用光影：对每个非文字主填充色生成径向渐变并引用（保证全图有体积感）
+    def gcol(h, dv):
+        r,g,b=[int(h[i:i+2],16)/255 for i in (1,3,5)]
+        return "#%02X%02X%02X"%(int(min(1,max(0,r+dv))*255),int(min(1,max(0,g+dv))*255),int(min(1,max(0,b+dv))*255))
+    gx=[]
+    for m in re.finditer(r'fill:(#[0-9a-fA-F]{6})', raw):
+        h=m.group(1).upper()
+        if h=="#FFFFFF": continue
+        rr,gg,bb=[int(h[i:i+2],16)/255 for i in (1,3,5)]
+        _s,_v=colorsys.rgb_to_hsv(rr,gg,bb)[1],colorsys.rgb_to_hsv(rr,gg,bb)[2]
+        if _s<0.16 or _v<0.42 or _v>0.92: continue      # 暗文字/灰线/近白 不加渐变
+        gid="gx_"+h[1:]
+        gx.append((gid,h))
+        raw=raw.replace("fill:"+h, f"fill:url(#{gid})")
     # 描边 0.75pt
     raw = re.sub(r'stroke-width:\s*([\d.]+)', 'stroke-width: 0.75', raw)
-    # 注入多层 defs（替换已有 defs 或 <svg> 后插）
-    d = defs(vbw, vbh)
+    # defs 组装（解剖渐变 + 通用光影渐变）
+    d=defs(vbw,vbh)
+    gx_str="".join(
+        f'<radialGradient id="{gid}" cx="38%" cy="33%" r="82%">'
+        f'<stop offset="0%" stop-color="{gcol(h,0.22)}"/><stop offset="33%" stop-color="{h}"/>'
+        f'<stop offset="100%" stop-color="{gcol(h,-0.3)}"/></radialGradient>' for gid,h in gx)
+    if gx_str: d=d.replace("</defs>", gx_str+"</defs>")
     if "<radialGradient id=\"g_bg\"" not in raw:
-        if "<defs>" in raw:
-            raw = re.sub(r'<defs>', '<defs>', raw, count=1)
-            raw = re.sub(r'</defs>', d + "\n</defs>", raw, count=1) if False else raw
-        raw = re.sub(r'(<svg[^>]*>)', r'\1\n' + d, raw, count=1)
+        raw=re.sub(r'(<svg[^>]*>)', r'\1\n'+d, raw, count=1)
     # 背景（默认不画整幅底色，纯白；--bg 才加，仅覆盖内容底的极浅渐晕）
     if bg:
         raw = re.sub(r'(<svg[^>]*>)', rf'\1\n<rect x="{vbx}" y="{vby}" width="{vbw}" height="{vbh}" fill="url(#g_bg)"/>', raw, count=1)

@@ -1,6 +1,6 @@
 ---
 name: bio-svg-figure
-description: 设计与生成高质量科学/教材示意图（SVG 矢量，Nature Reviews 风）。融合 creating-svg-illustrations 的 SVG 技术规范（画布/样式/文本/验证/嵌入）与 scientific-schematics 的设计出版规范（示意图类型/配色语义/箭头规范/≥7pt/色盲/出版维度），并内置生物教材固定规范（150×100mm、7.5/6/5pt、NR 色板、RDKit 真实分子结构、PNG 落位）。用于绘制通路图/机制图/分类图/知识地图等教学与论文配图。Trigger on：画通路/机制/分类/知识地图等示意 SVG 时使用。
+description: 设计与生成高质量科学/教材示意图（SVG 矢量、Nature Reviews 风）。融合 SVG 技术规范（画布/样式/文本/验证）与设计出版规范（示意图类型/配色语义/箭头语义/≥7pt/色盲/出版合规），内置生物教材固定规范（150×100mm、三档字号 7.5/6/5pt、NR 色板、RDKit 分子结构、300dpi 导出）。用于绘制通路图/机制图/分类图/知识地图等教学与论文配图。Trigger on：画通路/机制/分类/知识地图等示意 SVG 时使用。
 license: "CC-BY-4.0"
 ---
 
@@ -119,7 +119,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 | 图注 | 放 Word（图下方**宋体 6pt**），不入图 |
 
 ## 五·五、既有图（AI 导出）NR 增强 + 进阶质感（复盘定稿）
-对**已 AI 导出**的图（非程序化重画），**只增强质感、不改排版**。工具：`nr_color_audit.py` + `nr_enhance.py`（`textbook/figures/` + GitHub 分发包）。
+对**已 AI 导出**的图（非程序化重画），**只增强质感、不改排版**。工具：`scripts/nr_color_audit.py` + `scripts/nr_enhance.py`（随 skill 分发，见 GitHub 仓库 `wangseeker/bio-svg-figure`）。
 
 1. **配色审计+校正**：`nr_color_audit.py <f>.svg --prefix=<f>` → `_NR配色.svg` + 审计 md（莫兰迪降饱和、红绿并用检查、文字对比、色相精简）
 2. **进阶质感**：`nr_enhance.py <f>_NR配色.svg --prefix=<f>` → `_NR进阶.svg`（默认：**极浅暖白底 + 通用光影 + 0.75pt + 无标尺**）
@@ -127,7 +127,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 
 **定稿参数（勿改）**：极浅暖白底 `#FFFFFF→#FCFAF6→#F4F0E9`（**绝不灰暗**）；只降 **S>0.62** 高饱和、明度只救极暗不压亮；**通用光影**（对每个非文字主填充色生成 `gx_*` 径向渐变，fill→`url(#gx_*)`）；描边 **0.75pt**；中文 `SimHei`/英文 `Arial`，粗体 `font-weight`；无标尺默认（结构图才 `--scalebar`）。
 
-**复盘 7 坑（详见 `textbook/figures/教材矢量大图-NR增强进阶SOP.md`）**：
+**复盘 7 坑（详见 `references/NR增强进阶SOP.md`）**：
 1. 背景渐晕做深 → 灰蒙蒙 → 改**极浅暖白**
 2. 全局降饱和+压明度 → 发灰 → 只降 S>0.62、不压亮
 3. 光影只映射解剖色 → 其余图**光影引用=0** → 改**通用光影**（自检 `grep -c 'url(#gx_' <f>_NR进阶.svg` 应>0）
@@ -139,7 +139,7 @@ print(f'图形≈{shapes} text={len(texts)} 比值≈{shapes/len(texts):.1f}:1 �
 ## 六、工作流
 1. 定主题/要素（该画什么、分几区、标签文字，忠于教材/论文）
 2. 定图幅、字号、色板（第二、五节常量）
-3. 元件化拼装（ball/node/arrow/beta_cycle/membrane/region 等函数；函数库与拼装示例见 ~/.reasonix/vault/Writing/textbook/figures/教材作图批量方法.md）
+3. 元件化拼装（ball/node/arrow/beta_cycle/membrane/region 等；函数库 `scripts/elements.py`，拼装示例见 `references/教材作图批量方法.md`）
 4. 生成 SVG（**标准属性**，勿 style/class）→ 渲染 PNG 校验
 5. 交付：SVG（AI 开）＋ PDF（AI 兼容好）＋ 300dpi PNG（出版）
 6. 人眼验收（勿凭机械评审）→ 验收后按需精修

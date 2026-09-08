@@ -29,9 +29,9 @@ def hsl_morandi(hexc):
     if len(h) == 3: h = "".join(c*2 for c in h)
     r, g, b = int(h[0:2],16)/255, int(h[2:4],16)/255, int(h[4:6],16)/255
     hh, s, v = colorsys.rgb_to_hsv(r, g, b)
-    if s > 0.62: s = 0.5 + (s - 0.62) * 0.4       # 仅高饱和适度降彩（保明快）
+    if s > 0.62: s = 0.5 + (s - 0.62) * 0.4         # 仅高饱和图形降彩，保文字对比
     v = min(v, 0.9)
-    if v < 0.35: v = 0.4                           # 只救极暗，不压亮
+    if v < 0.35: v = 0.4                            # 只救极暗，不压亮（文字保持深色清晰）
     rr, gg, bb = colorsys.hsv_to_rgb(hh, s, v)
     return "#%02X%02X%02X" % (int(rr*255), int(gg*255), int(bb*255))
 
@@ -77,8 +77,11 @@ def enhance(svg_path, prefix=None, scalebar=False, bg=True):
         gid="gx_"+h[1:]
         gx.append((gid,h))
         raw=raw.replace("fill:"+h, f"fill:url(#{gid})")
-    # 描边 0.75pt
+    # 描边 0.75pt（css 冒号 + 属性引号都统一；保留 stroke-width="0" 无描边）
     raw = re.sub(r'stroke-width:\s*([\d.]+)', 'stroke-width: 0.75', raw)
+    def _sw(m):
+        return 'stroke-width="0.75"' if float(m.group(1)) != 0 else 'stroke-width="0"'
+    raw = re.sub(r'stroke-width="(\d+\.?\d*)"', _sw, raw)
     # defs 组装（解剖渐变 + 通用光影渐变）
     d=defs(vbw,vbh)
     gx_str="".join(
